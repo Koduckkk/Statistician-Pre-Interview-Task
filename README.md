@@ -1,1 +1,17 @@
 # Statistician-Pre-Interview-Task
+
+Dehua Tao
+
+August 2024
+
+The goal of moderating school assessments is to convert school-based scores into moderated scores that are comparable across different schools while retaining the properties of the raw scores. Raw scores are unsuitable due to variations in assessment types and score scales. For a school with $N$ students, the raw scores are denoted as $\boldsymbol{X} = \left( x_1, x_2, \dots, x_N \right)$. The objective is to transform this vector into $\tilde{\boldsymbol{X}} = \left( \tilde{x}_1, \tilde{x}_2, \dots, \tilde{x}_N \right)$, representing the moderated scores. Linear adjustments or regression models are applied to $\boldsymbol{X}$ to derive $\tilde{\boldsymbol{X}}$, incorporating the examination marks $\boldsymbol{Y} = \left( y_1, y_2, \dots, y_N \right)$ to ensure validity.
+
+The model I selected for moderating school assessments is the Bayesian segmented linear regression approach presented in Article 1. This model uses the Wasserstein distance between the cumulative distributions of $\tilde{\boldsymbol{X}}$ and $\boldsymbol{Y}$ to measure similarity. By incorporating the empirical cumulative function, minimizing the Wasserstein distance becomes equivalent to minimizing the mean square error (MSE) in regression, which aids in parameter estimation.
+
+There are several reasons for choosing this model. First, it offers flexibility by allowing different linear relationships across ranges. $\tilde{\boldsymbol{X}}$, determined by the highest examination score $y_{(N)}$ and $X$, is modeled via a Bayesian segmented linear regression with up to two breakpoints, with the added constraint that the highest $\tilde{\boldsymbol{X}}$ should equal $y_{(N)}$. The location of these breakpoints is determined using posterior probabilities, making the model more general than the MSR(1) model in Article 3 which sets the median of $\boldsymbol{X}$ as the breakpoint. The optimal number of breakpoints is decided by the Bayes factor, similar to Bayesian hypothesis testing.
+
+Second, the model efficiently estimates parameters without relying on traditional MCMC procedures. By expressing the segmented regression in a matrix-vector form and applying conjugate priors, parameters can be directly sampled from the posterior distribution, offering a faster and more robust estimation process compared to iterative algorithms.
+
+The third reason is the outlier detection procedure. A local linear estimator calculated by $\boldsymbol{Y}$ and $\tilde{\boldsymbol{X}}$ is used to flag underperforming students. The tuning parameter is determined by cross-validation. This step is more sensible compared to the approach in Article 3 for detecting depressed students. In Article 3, bomb-outs are detected by identifying differences greater than 7.5 between the $E_1$ value and the top $\boldsymbol{X}$ value, a threshold based on experience from Article 2, which the Article 1 model does not use. Additionally, the Article 3 model determines other depressed students by directly deriving the nonparametric quantile, a less efficient method compared to the Article 1 approach, which first derives the nonparametric CDF using observed data before determining the boundary.
+
+Finally, in real data applications, the model from Article 1 produces sensible results, with the CDF of $\tilde{\boldsymbol{X}}$ closely matching that of $\boldsymbol{Y}$. Sensitivity analysis confirms that the model is robust to prior parameter values, solidifying the analysis outcomes.
